@@ -2,9 +2,9 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/cftExtractor"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/surfExtractor"/>
-	<classpathentry kind="lib" path="C:/Program Files/Weka-3-6/weka.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Configuration"/>
+	<classpathentry kind="lib" path="C:/Program Files/Weka-3-6/weka.jar" sourcepath="C:/Program Files/Weka-3-6/weka-src.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/cftExtractorRecode"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
