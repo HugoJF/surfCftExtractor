@@ -9,73 +9,101 @@ import weka.core.converters.ArffSaver;
 
 public class SurfCftExtractor {
 
+	/**
+	 * This method is used whe using SurfCftExtractor directly from it's executable
+	 * 
+	 * @param args Configuration object containing needed parameters 
+	 */
 	public static void main(String[] args) {
 		// Setup parameters
-		Configuration.addNewValidParameter("imageset.path", true);
-		Configuration.addNewValidParameter("imageset.relation", true);
-		Configuration.addNewValidParameter("arff.path", true);
-		Configuration.addNewValidParameter("kmeans.kvalue", true);
-		Configuration.addNewValidParameter("kmeans.iteration", true);
+		Configuration config = new Configuration();
+		
+		config.addNewValidParameter("imageset.path", true);
+		config.addNewValidParameter("imageset.relation", true);
+		config.addNewValidParameter("arff.path", true);
+		config.addNewValidParameter("kmeans.kvalue", true);
+		config.addNewValidParameter("kmeans.iteration", true);
 
 		// Read from startup arguments
-		Configuration.readFromRunArgs(args);
+		config.readFromRunArgs(args);
 
 		// Verify if we don't have a needed argument
 		try {
-			Configuration.verifyArgs();
+			config.verifyArgs();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		// Print parameters on screen
-		Configuration.debugParameters();
+		config.debugParameters();
 
 		// Initiate extractors
 		SurfExtractor se = new SurfExtractor();
 		CftExtractorRecode cer = new CftExtractorRecode();
 
 		// Extract surf attributes
-		Instances surfInstances = se.generateInstances(Configuration.getConfiguration("imageset.path"), Integer.valueOf(Configuration.getConfiguration("kmeans.kvalue")), Integer.valueOf(Configuration.getConfiguration("kmeans.iteration")), Configuration.getConfiguration("imageset.relation"));
-
+		Instances surfInstances = se.generateInstances(config);
+		
 		// Extract cft attributes
-		Instances cftInstances = cer.generateInstances(Configuration.getConfiguration("imageset.relation"), Configuration.getConfiguration("imageset.path"));
+		Instances cftInstances = cer.generateInstances(config);
+		
 
+		// Create the surfInstances exporter
+		WekaExporter wieSurf = new WekaExporter(surfInstances);
+		
+		// Create the cftInstances exporter
+		WekaExporter wieCft = new WekaExporter(cftInstances);
+
+		//Set path for cft and surf instances
+		wieSurf.setPath(config.getConfiguration("arff.path") + ".cft.arff");
+		wieCft.setPath(config.getConfiguration("arff.path") + "surf.arff");
+		
+		//Export cft and surf instances for debugging
+		wieSurf.export();
+		wieCft.export();
+		
 		// Delete class from surf attributes
 		surfInstances.deleteAttributeAt(surfInstances.numAttributes() - 1);
 
 		// Merge both attributes instances
 		Instances mergedInstances = Instances.mergeInstances(surfInstances, cftInstances);
 
-		// Instantiate InstanceExporter
+		// Create the mergedInstance arff exporter
 		WekaExporter wie = new WekaExporter(mergedInstances);
+		
 
 		// Set final path
-		wie.setPath(Configuration.getConfiguration("arff.path"));
+		wie.setPath(config.getConfiguration("arff.path"));
 
 		// Export final file;
 		wie.export();
 	}
 
-	public void run(String imageSetPath, String imageSetRelation, String arffPath, int kValue, int iterations) {
+	/**
+	 * This method is used when SurfCftExtractor is used as a library
+	 * 
+	 * @param config Configuration object containing needed parameters 
+	 */
+	public void run(Configuration config) {
 		// Verify if we don't have a needed argument
 		try {
-			Configuration.verifyArgs();
+			config.verifyArgs();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		// Print parameters on screen
-		Configuration.debugParameters();
+		config.debugParameters();
 
 		// Initiate extractors
 		SurfExtractor se = new SurfExtractor();
 		CftExtractorRecode cer = new CftExtractorRecode();
 
 		// Extract surf attributes
-		Instances surfInstances = se.generateInstances(imageSetPath, kValue, iterations, imageSetRelation);
+		Instances surfInstances = se.generateInstances(config);
 
 		// Extract cft attributes
-		Instances cftInstances = cer.generateInstances(imageSetRelation, imageSetPath);
+		Instances cftInstances = cer.generateInstances(config);
 
 		// Delete class from surf attributes
 		surfInstances.deleteAttributeAt(surfInstances.numAttributes() - 1);
@@ -87,7 +115,8 @@ public class SurfCftExtractor {
 		WekaExporter wie = new WekaExporter(mergedInstances);
 
 		// Set final path
-		wie.setPath(arffPath);
+		//wie.setPath(arffPath);
+		wie.setPath(config.getConfiguration("arff.path"));
 
 		// Export final file;
 		wie.export();
