@@ -55,8 +55,8 @@ public class SurfCftExtractor {
 		WekaExporter wieCft = new WekaExporter(cftInstances);
 
 		//Set path for cft and surf instances
-		wieSurf.setPath(config.getConfiguration("arff.path") + ".cft.arff");
-		wieCft.setPath(config.getConfiguration("arff.path") + "surf.arff");
+		wieSurf.setPath(config.getConfig("arff.path") + ".cft.arff");
+		wieCft.setPath(config.getConfig("arff.path") + "surf.arff");
 		
 		//Export cft and surf instances for debugging
 		wieSurf.export();
@@ -73,7 +73,7 @@ public class SurfCftExtractor {
 		
 
 		// Set final path
-		wie.setPath(config.getConfiguration("arff.path"));
+		wie.setPath(config.getConfig("arff.path"));
 
 		// Export final file;
 		wie.export();
@@ -116,7 +116,7 @@ public class SurfCftExtractor {
 
 		// Set final path
 		//wie.setPath(arffPath);
-		wie.setPath(config.getConfiguration("arff.path"));
+		wie.setPath(config.getConfig("arff.path"));
 
 		// Export final file;
 		wie.export();
